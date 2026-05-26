@@ -1,62 +1,55 @@
 'use client';
-
 import { useState } from 'react';
-import { STORE, PULSE } from '@/lib/data';
-import FilterStrip from '@/components/FilterStrip';
-import Pulse from '@/components/Pulse';
-import Trajectory from '@/components/Trajectory';
-import Spotted from '@/components/Spotted';
-import Journey from '@/components/Journey';
-import Top3 from '@/components/Top3';
-import BigMove from '@/components/BigMove';
-import StageDrawer from '@/components/StageDrawer';
+import Sidebar from '@/components/Sidebar';
+import TopBar from '@/components/TopBar';
+import OverviewView from '@/components/views/OverviewView';
+import StageView from '@/components/views/StageView';
+import InsightsView from '@/components/views/InsightsView';
+import DecisionsView from '@/components/views/DecisionsView';
+import Copilot from '@/components/Copilot';
+import { INT_LABELS } from '@/lib/data';
 
-export default function Home() {
-  const [integrations, setIntegrations] = useState({
-    studio: true, vini: true, dms: true, crm: true, market: true, web: true,
-  });
-  const [ddOpen, setDdOpen] = useState(false);
-  const [drawerStage, setDrawerStage] = useState(null);
+const DEFAULT_INTS = Object.fromEntries(Object.keys(INT_LABELS).map((k) => [k, true]));
 
-  const handleOutsideClick = (e) => {
-    if (ddOpen && !e.target.closest('.fl-dropdown') && !e.target.closest('.cov-pill')) {
-      setDdOpen(false);
-    }
-  };
+const VIEW_META = {
+  overview:  { title: 'Overview',      sub: 'Westgate Honda · full store dashboard' },
+  stage:     { title: 'Stage Deep-Dive', sub: 'Click a stage for detailed analysis' },
+  insights:  { title: 'Spyne Spotted', sub: 'Cross-stage patterns · AI-detected' },
+  decisions: { title: 'Decision Log',  sub: 'Every action · who · when · outcome' },
+};
+
+export default function Page() {
+  const [view, setView] = useState({ type: 'overview' });
+  const [collapsed, setCollapsed] = useState(false);
+  const [ints, setInts] = useState(DEFAULT_INTS);
+  const [time, setTime] = useState('mtd');
+
+  const meta = VIEW_META[view.type] || VIEW_META.overview;
+  const title = view.type === 'stage' && view.key
+    ? `Stage: ${view.key.charAt(0).toUpperCase() + view.key.slice(1)}`
+    : meta.title;
 
   return (
-    <div onClick={handleOutsideClick}>
-      <FilterStrip
-        integrations={integrations}
-        setIntegrations={setIntegrations}
-        ddOpen={ddOpen}
-        setDdOpen={setDdOpen}
-      />
-      <div className="page">
-        <div className="greet">
-          <div>
-            <h1>Good morning, Marcus</h1>
-            <div className="sub">
-              {STORE.date} · <strong>{PULSE.daysLeft} selling days left</strong> ·{' '}
-              <strong style={{ color: 'var(--accent)' }}>3 recovery actions</strong> worth{' '}
-              <strong>$7,460</strong>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn ghost">Brief team</button>
-            <button className="btn">Morning huddle ▾</button>
-          </div>
-        </div>
+    <div className={`shell ${collapsed ? 'collapsed' : ''}`}>
+      <Sidebar view={view} setView={setView} collapsed={collapsed} setCollapsed={setCollapsed} />
 
-        <Pulse />
-        <Trajectory />
-        <Spotted integrations={integrations} />
-        <Journey integrations={integrations} onStageClick={setDrawerStage} />
-        <Top3 />
-        <BigMove />
+      <div className="main">
+        <TopBar
+          ints={ints}
+          setInts={setInts}
+          time={time}
+          setTime={setTime}
+          title={title}
+          sub={meta.sub}
+        />
+
+        {view.type === 'overview' && <OverviewView ints={ints} setView={setView} />}
+        {view.type === 'stage' && <StageView stageKey={view.key} />}
+        {view.type === 'insights' && <InsightsView />}
+        {view.type === 'decisions' && <DecisionsView />}
       </div>
 
-      {drawerStage && <StageDrawer stage={drawerStage} onClose={() => setDrawerStage(null)} />}
+      <Copilot />
     </div>
   );
 }

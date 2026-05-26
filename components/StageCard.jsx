@@ -1,31 +1,26 @@
 import { LockedCard } from './Atoms';
-import { ZONE_REQS } from '@/lib/data';
-import { SegmentsViz, PipelineViz, AttractViz, HistogramViz, FunnelViz, QueueViz } from './StageViz';
+import { StageVizSwitch } from './StageViz';
+import { ZONE_REQS, INT_LABELS } from '@/lib/data';
 
-const VIZ = {
-  segments: SegmentsViz,
-  pipeline: PipelineViz,
-  attract: AttractViz,
-  histogram: HistogramViz,
-  funnel: FunnelViz,
-  queue: QueueViz,
-};
-
-export default function StageCard({ stage, integrations, onClick }) {
+export default function StageCard({ stage, ints, setView }) {
   const reqs = ZONE_REQS[stage.key] || [];
-  const missing = reqs.filter((r) => !integrations[r]);
+  const missing = reqs.filter((r) => !ints[r]);
   const locked = missing.length > 0;
-  const tatUnit = stage.tatUnit || 'd';
-  const VizComp = VIZ[stage.vizType];
+  const est = stage.cost;
+
+  const pctile = stage.peerPercentile;
+  const ppTone = pctile < 25 ? 'bad' : pctile < 50 ? 'warn' : 'good';
+  const barPct = Math.min((stage.tat / (stage.target * 2.2)) * 100, 100);
+  const targetPct = Math.min((stage.target / (stage.target * 2.2)) * 100, 100);
 
   return (
     <div
       className={`stage flagged ${stage.status}`}
-      onClick={!locked ? onClick : undefined}
+      onClick={() => setView({ type: 'stage', key: stage.key })}
     >
       <div className="st-head">
         <div className="st-name">
-          <span className="st-num">STAGE {stage.num}</span>
+          <span className="st-num">{stage.num}</span>
           <span className="st-title">{stage.name}</span>
         </div>
         <span className={`st-dot ${stage.status}`} />
@@ -33,40 +28,37 @@ export default function StageCard({ stage, integrations, onClick }) {
 
       <div className="st-tat">
         <div className="st-tat-row">
-          <span className={`st-tat-val ${stage.status}`}>
-            {stage.tat}
-            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{tatUnit}</span>
-          </span>
-          <span className="st-tat-target">target {stage.target}{tatUnit}</span>
-          <span className={`st-tat-delta ${stage.status}`} style={{ marginLeft: 'auto' }}>{stage.delta}</span>
+          <span className={`st-tat-val ${stage.status}`}>{stage.tat}{stage.tatUnit || 'd'}</span>
+          <span className="st-tat-target">/ {stage.target}{stage.tatUnit || 'd'} target</span>
+          <span className={`st-tat-delta ${stage.status}`}>{stage.delta}</span>
         </div>
         <div className="st-tat-bar">
-          <div
-            className="st-tat-bar-fill"
-            style={{
-              width: `${Math.min((stage.tat / (stage.target * 2)) * 100, 100)}%`,
-              background:
-                stage.status === 'bad' ? 'var(--bad)' :
-                stage.status === 'warn' ? 'var(--warn)' : 'var(--good)',
-            }}
-          />
-          <div className="st-tat-bar-mark" style={{ left: `${(stage.target / (stage.target * 2)) * 100}%` }} />
+          <div className="st-tat-bar-fill" style={{ width: `${barPct}%`, background: `var(--${stage.status})` }} />
+          <div className="st-tat-bar-mark" style={{ left: `${targetPct}%` }} />
+        </div>
+        <div className="peer-bench">
+          Peer median <span className="mono">{stage.peerMedian}{stage.tatUnit || 'd'}</span> ·{' '}
+          <span className={`pp ${ppTone}`}>p{pctile}</span>
         </div>
       </div>
 
       <div className="st-viz">
-        {VizComp && <VizComp data={stage.viz} aged={stage.aged} />}
+        <StageVizSwitch vizType={stage.vizType} viz={stage.viz} />
       </div>
 
       <div className="st-foot">
-        <span className="st-cost">
-          ${stage.cost.toLocaleString()}
-          <span style={{ color: 'var(--text-3)', fontWeight: 400, fontSize: 10, marginLeft: 3 }}>{stage.costUnit}</span>
-        </span>
-        <button className="st-action">{stage.action}</button>
+        <span className="st-cost">−${stage.cost.toLocaleString()}{stage.costUnit}</span>
+        <button
+          className="st-action"
+          onClick={(e) => { e.stopPropagation(); setView({ type: 'stage', key: stage.key }); }}
+        >
+          {stage.action}
+        </button>
       </div>
 
-      {locked && <LockedCard missing={missing} est="X" />}
+      {locked && (
+        <LockedCard missing={missing} est={est} />
+      )}
     </div>
   );
 }

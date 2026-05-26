@@ -1,124 +1,110 @@
-export const SegmentsViz = ({ data }) => (
-  <div>
-    <div className="vz-label">Segment gaps · you vs market</div>
-    {data.map((d, i) => {
-      const maxGap = 15;
-      const pct = Math.min((Math.abs(d.gap) / maxGap) * 100, 100);
-      const fillColor =
-        d.status === 'bad' ? 'var(--bad)' :
-        d.status === 'warn' ? 'var(--warn)' : 'var(--good)';
-      return (
-        <div key={i} className="vz-row">
-          <span className="lbl">{d.lbl}</span>
-          <div className="bar">
-            <div className="bar-fill" style={{ width: `${pct}%`, background: fillColor }} />
-          </div>
-          <span className={`val ${d.status}`}>{d.gap > 0 ? '+' : ''}{d.gap}</span>
-        </div>
-      );
-    })}
-  </div>
-);
+// Six visualization types for stage cards
 
-export const PipelineViz = ({ data }) => (
-  <div>
-    <div className="vz-label">Stuck per stage</div>
-    <div className="pipeline">
-      {data.map((d, i) => (
-        <div key={i} className={`pipe-stage ${d.bottleneck ? 'bottleneck' : ''}`}>
-          <div className="pname">{d.lbl}</div>
-          <div className="pcount">{d.count}</div>
+export function SegmentsViz({ viz }) {
+  const max = Math.max(...viz.flatMap((r) => [r.you, r.market]));
+  return (
+    <div>
+      <div className="vz-label">You vs Market (days supply)</div>
+      {viz.map((r) => (
+        <div key={r.lbl} className="vz-row">
+          <span className="lbl">{r.lbl}</span>
+          <div className="bar">
+            <div className="bar-fill" style={{ width: `${(r.you / max) * 100}%`, background: r.status === 'bad' ? 'var(--bad)' : r.status === 'warn' ? 'var(--warn)' : 'var(--good)' }} />
+          </div>
+          <span className={`val ${r.status}`}>{r.you}d</span>
         </div>
       ))}
     </div>
-  </div>
-);
+  );
+}
 
-export const AttractViz = ({ data }) => (
-  <div>
-    <div className="vz-label">Units with attract issues</div>
-    {data.map((d, i) => (
-      <div key={i} className="vz-row">
-        <span className="lbl">{d.lbl}</span>
-        <div className="bar">
-          <div
-            className="bar-fill"
-            style={{
-              width: `${d.pct}%`,
-              background: d.status === 'bad' ? 'var(--bad)' : 'var(--warn)',
-            }}
-          />
+export function PipelineViz({ viz }) {
+  return (
+    <div className="pipeline">
+      {viz.map((s) => (
+        <div key={s.lbl} className={`pipe-stage ${s.bottleneck ? 'bottleneck' : ''}`}>
+          <div className="pname">{s.lbl}</div>
+          <div className="pcount">{s.count}</div>
         </div>
-        <span className={`val ${d.status}`}>{d.count}</span>
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
+}
 
-export const HistogramViz = ({ data, aged }) => {
-  const max = Math.max(...data.map((d) => d.count));
+export function AttractViz({ viz }) {
+  const max = Math.max(...viz.map((r) => r.count));
   return (
     <div>
-      <div className="vz-label">Response time distribution</div>
+      <div className="vz-label">Units by issue</div>
+      {viz.map((r) => (
+        <div key={r.lbl} className="vz-row">
+          <span className="lbl" style={{ fontSize: 9.5 }}>{r.lbl}</span>
+          <div className="bar">
+            <div className="bar-fill" style={{ width: `${(r.count / max) * 100}%`, background: r.status === 'bad' ? 'var(--bad)' : 'var(--warn)' }} />
+          </div>
+          <span className={`val ${r.status}`}>{r.count}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function HistogramViz({ viz }) {
+  const max = Math.max(...viz.map((r) => r.count));
+  return (
+    <div>
       <div className="histo">
-        {data.map((d, i) => (
-          <div
-            key={i}
-            className="histo-bar"
-            style={{ height: `${(d.count / max) * 100}%`, background: d.color }}
-          />
+        {viz.map((r) => (
+          <div key={r.lbl} className="histo-bar" style={{ height: `${(r.count / max) * 44}px`, background: r.color }} />
         ))}
       </div>
       <div className="histo-labels">
-        {data.map((d, i) => (
-          <span key={i}>{d.lbl}</span>
-        ))}
-      </div>
-      <div className="vz-row" style={{ marginTop: 6 }}>
-        <span className="lbl">Aged 72h+</span>
-        <div className="bar">
-          <div className="bar-fill" style={{ width: '80%', background: 'var(--bad)' }} />
-        </div>
-        <span className="val bad">{aged}</span>
+        {viz.map((r) => <span key={r.lbl}>{r.lbl}</span>)}
       </div>
     </div>
   );
-};
+}
 
-export const FunnelViz = ({ data }) => (
-  <div>
-    <div className="vz-label">Conversion at each step</div>
+export function FunnelViz({ viz }) {
+  const worst = viz.reduce((a, b) => (b.pct - b.benchmark < a.pct - a.benchmark ? b : a));
+  return (
     <div className="funnel-mini">
-      {data.map((d, i) => {
-        const color =
-          d.status === 'good' ? 'var(--good)' :
-          d.status === 'warn' ? 'var(--warn)' :
-          d.status === 'bad' ? 'var(--bad)' : 'var(--accent)';
-        return (
-          <div key={i} className={`fm-row ${d.status === 'bad' ? 'worst' : ''}`}>
-            <span className="name">{d.lbl}</span>
-            <div className="bar">
-              <div className="bar-fill" style={{ width: `${d.pct}%`, background: color }} />
-            </div>
-            <span className="pct">{d.pct}%</span>
+      {viz.map((r) => (
+        <div key={r.lbl} className={`fm-row ${r === worst ? 'worst' : ''}`}>
+          <span className="name">{r.lbl}</span>
+          <div className="bar">
+            <div className="bar-fill" style={{ width: `${r.pct}%`, background: r.status === 'bad' ? 'var(--bad)' : r.status === 'good' ? 'var(--good)' : 'var(--warn)' }} />
+            <div className="bar-bench" style={{ left: `${r.benchmark}%` }} />
           </div>
-        );
-      })}
-    </div>
-  </div>
-);
-
-export const QueueViz = ({ data }) => (
-  <div>
-    <div className="vz-label">Sold vs queue · by segment</div>
-    <div className="queue">
-      {data.map((d, i) => (
-        <div key={i} className="q-row">
-          <span className="seg">{d.seg}</span>
-          <span className="stat">sold {d.sold} · queue {d.queue}</span>
-          <span className={`dot ${d.status}`} />
+          <span className="pct">{r.pct}%</span>
         </div>
       ))}
     </div>
-  </div>
-);
+  );
+}
+
+export function QueueViz({ viz }) {
+  return (
+    <div className="queue">
+      {viz.map((r) => (
+        <div key={r.seg} className="q-row">
+          <span className="seg">{r.seg}</span>
+          <span className="stat">{r.queue}/{r.sold} queued</span>
+          <span className={`dot ${r.status}`} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function StageVizSwitch({ vizType, viz }) {
+  switch (vizType) {
+    case 'segments':  return <SegmentsViz viz={viz} />;
+    case 'pipeline':  return <PipelineViz viz={viz} />;
+    case 'attract':   return <AttractViz viz={viz} />;
+    case 'histogram': return <HistogramViz viz={viz} />;
+    case 'funnel':    return <FunnelViz viz={viz} />;
+    case 'queue':     return <QueueViz viz={viz} />;
+    default: return null;
+  }
+}
