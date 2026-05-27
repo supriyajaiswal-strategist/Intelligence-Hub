@@ -1,10 +1,7 @@
 import Pulse from '../Pulse';
-import Trajectory from '../Trajectory';
-import SpottedFeed from '../SpottedFeed';
 import Journey from '../Journey';
 import Top3 from '../Top3';
 import BigMove from '../BigMove';
-import DecisionLogPreview from '../DecisionLogPreview';
 import { STORE, PULSE } from '@/lib/data';
 
 export default function OverviewView({ ints, setView }) {
@@ -13,26 +10,22 @@ export default function OverviewView({ ints, setView }) {
 
   return (
     <div className="canvas">
-      <div className="greet">
+      <header className="page-head">
         <div>
-          <h1>{greet}, Marcus.</h1>
-          <div className="sub">
-            {STORE.date} · {STORE.location} ·{' '}
-            <strong>{PULSE.daysLeft} selling days</strong> left this month
-          </div>
+          <h1 className="page-title">{greet}, Marcus.</h1>
+          <p className="page-sub">
+            {STORE.date} · {PULSE.daysLeft} selling days left · {STORE.location}
+          </p>
         </div>
-        <button className="btn ghost sm">
-          <span>↗ Export</span>
-        </button>
-      </div>
+        <div className="page-actions">
+          <button className="btn ghost sm">Export</button>
+        </div>
+      </header>
 
       <Pulse />
-      <Trajectory />
-      <SpottedFeed setView={setView} />
       <Journey ints={ints} setView={setView} />
       <Top3 setView={setView} />
       <BigMove />
-      <DecisionLogPreview setView={setView} />
     </div>
   );
 }

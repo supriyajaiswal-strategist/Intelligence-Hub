@@ -2,18 +2,22 @@ import { STAGES, PULSE } from '@/lib/data';
 import StageCard from './StageCard';
 
 export default function Journey({ ints, setView }) {
+  const critical = STAGES.filter((s) => s.status === 'bad').length;
+  const watch = STAGES.filter((s) => s.status === 'warn').length;
+
   return (
-    <div>
-      <div className="journey-head">
-        <div className="journey-title">
-          <span className="lbl">Time-to-Sell Journey</span>
-          <span className="central">
-            Central metric: <span>{PULSE.timeToSell}d</span> avg (target {PULSE.timeToSellTarget}d)
-          </span>
+    <section className="section">
+      <div className="section-head">
+        <div>
+          <h2 className="section-title">Time-to-Sell journey</h2>
+          <p className="section-sub">
+            6 stages · avg <span className="mono">{PULSE.timeToSell}d</span> · target{' '}
+            <span className="mono">{PULSE.timeToSellTarget}d</span>
+          </p>
         </div>
-        <div className="journey-meta">
-          <strong>{STAGES.filter((s) => s.status === 'bad').length}</strong> stages critical ·{' '}
-          <strong>{STAGES.filter((s) => s.status === 'warn').length}</strong> watch
+        <div className="section-meta">
+          {critical > 0 && <span className="meta-pill bad">{critical} critical</span>}
+          {watch > 0 && <span className="meta-pill warn">{watch} watch</span>}
         </div>
       </div>
       <div className="journey">
@@ -21,6 +25,6 @@ export default function Journey({ ints, setView }) {
           <StageCard key={s.key} stage={s} ints={ints} setView={setView} />
         ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -16,87 +16,78 @@ export default function Pulse() {
         return Math.max(8000, Math.round(v + delta));
       });
       setFlash(true);
-      setTimeout(() => setFlash(false), 600);
+      setTimeout(() => setFlash(false), 700);
     }, 3800);
     return () => clearInterval(iv);
   }, []);
 
-  const paceW = (PULSE.pace / PULSE.goal) * 100;
+  const ttsDelta = PULSE.timeToSellPrev - PULSE.timeToSell;
   const motTotal = PULSE.moneyOnTableBreakdown.reduce((s, i) => s + i.value, 0);
+  const paceW = (PULSE.pace / PULSE.goal) * 100;
+  const paceTone = paceW >= 85 ? 'good' : paceW >= 65 ? 'warn' : 'bad';
 
   return (
-    <div className="pulse">
-      {/* Pace */}
-      <div className="pulse-tile">
-        <div className="p-label">Units Pace</div>
-        <div className="p-value">
-          {PULSE.pace}<span className="of"> / {PULSE.goal}</span>
+    <section className="kpis">
+      {/* Hero: Time to Sell */}
+      <div className="kpi kpi-hero">
+        <div className="kpi-label">Time to Sell</div>
+        <div className="kpi-value-row">
+          <span className="kpi-value mono">{PULSE.timeToSell}</span>
+          <span className="kpi-unit">days</span>
         </div>
-        <div className="p-sub">{PULSE.daysLeft}d left · need {PULSE.goal - PULSE.pace} more</div>
-        <div className="p-bar">
-          <div className="p-bar-fill" style={{ width: `${paceW}%`, background: paceW >= 85 ? 'var(--good)' : paceW >= 65 ? 'var(--warn)' : 'var(--bad)' }} />
-          <div className="p-bar-mark" style={{ left: '85%' }} />
+        <div className="kpi-meta">
+          <span className="trend down">↓ {ttsDelta}d since you joined Spyne</span>
+          <span className="kpi-sep">·</span>
+          <span>Target {PULSE.timeToSellTarget}d</span>
         </div>
-      </div>
-
-      {/* Gross */}
-      <div className="pulse-tile">
-        <div className="p-label">Gross MTD</div>
-        <div className="p-value">${PULSE.grossMTD}k</div>
-        <div className="p-sub">LM ${PULSE.grossLM}k · {Math.round(((PULSE.grossMTD - PULSE.grossLM) / PULSE.grossLM) * 100)}%</div>
-        <Sparkline data={PULSE.grossTrend} w={80} h={20} color="var(--accent)" />
-      </div>
-
-      {/* Time to Sell — hero */}
-      <div className="pulse-tile hero">
-        <div className="p-label">⏱ Time to Sell</div>
-        <div className="p-value hero">{PULSE.timeToSell}d</div>
-        <div className="p-sub">Target {PULSE.timeToSellTarget}d · was {PULSE.timeToSellPrev}d when you joined</div>
-        <div className="p-bar" style={{ marginTop: 12 }}>
-          <div className="p-bar-fill" style={{ width: `${Math.min((PULSE.timeToSellTarget / PULSE.timeToSell) * 100, 100)}%`, background: 'var(--accent)' }} />
+        <div className="kpi-bar">
+          <div
+            className="kpi-bar-fill"
+            style={{
+              width: `${Math.min((PULSE.timeToSellTarget / PULSE.timeToSell) * 100, 100)}%`,
+            }}
+          />
         </div>
       </div>
 
       {/* Money on Table */}
-      <div className={`pulse-tile ${flash ? 'tick-flash' : ''}`}>
-        <div className="p-label"><span className="live" /> Money on Table</div>
-        <div className="p-value bleed mono">${mot.toLocaleString()}</div>
-        <div className="stacked-bar">
-          {PULSE.moneyOnTableBreakdown.map((b) => (
-            <div key={b.label} style={{ width: `${(b.value / motTotal) * 100}%`, background: b.color }} title={`${b.label}: $${b.value.toLocaleString()}`} />
-          ))}
+      <div className={`kpi ${flash ? 'flash' : ''}`}>
+        <div className="kpi-label">
+          <span className="live" /> Money on table
         </div>
-        <div className="p-sub" style={{ marginTop: 5 }}>
+        <div className="kpi-value-row">
+          <span className="kpi-value mono kpi-bad">${(mot / 1000).toFixed(1)}k</span>
+        </div>
+        <div className="kpi-meta">Recoverable today across 6 stages</div>
+        <div className="kpi-stack">
           {PULSE.moneyOnTableBreakdown.map((b) => (
-            <span key={b.label} style={{ marginRight: 8, fontSize: 10.5, color: b.color }}>{b.label}</span>
+            <div
+              key={b.label}
+              style={{ width: `${(b.value / motTotal) * 100}%`, background: b.color }}
+              title={`${b.label}: $${b.value.toLocaleString()}`}
+            />
           ))}
         </div>
       </div>
 
-      {/* Today */}
-      <div className="pulse-tile">
-        <div className="p-label">Today</div>
-        <div className="today" style={{ marginTop: 8 }}>
-          <div className="today-it">
-            <span className="today-n mono">{PULSE.todaySold}</span>
-            <span className="today-l">Sold</span>
-          </div>
-          <div className="today-it">
-            <span className="today-n mono">{PULSE.todayLeads}</span>
-            <span className="today-l">Leads</span>
-          </div>
-          <div className="today-it">
-            <span className="today-n mono">{PULSE.todayUps}</span>
-            <span className="today-l">Ups</span>
-          </div>
+      {/* Units pace */}
+      <div className="kpi">
+        <div className="kpi-label">Units pace</div>
+        <div className="kpi-value-row">
+          <span className="kpi-value mono">{PULSE.pace}</span>
+          <span className="kpi-of">/ {PULSE.goal}</span>
         </div>
-        <div className="p-sub" style={{ marginTop: 6 }}>
-          Yest: {PULSE.ySold} sold · {PULSE.yLeads} leads · {PULSE.yUps} ups
+        <div className="kpi-meta">
+          {PULSE.daysLeft} days left · {PULSE.goal - PULSE.pace} units to goal
         </div>
-        <div className="p-bar">
-          <div className="p-bar-fill" style={{ width: `${(PULSE.todaySold / (PULSE.goal / PULSE.totalDays)) * 100}%`, background: 'var(--good)' }} />
+        <div className="kpi-bar">
+          <div
+            className={`kpi-bar-fill ${paceTone}`}
+            style={{ width: `${paceW}%` }}
+          />
+          <div className="kpi-bar-mark" style={{ left: '85%' }} />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
