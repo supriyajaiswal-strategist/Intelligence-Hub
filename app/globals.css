@@ -299,8 +299,7 @@ td[align="right"], .num, .tabular {
 }
 .tb-left { display: flex; align-items: center; gap: 28px; flex: 1; min-width: 0; }
 .tb-title {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 16px; font-weight: 600;
+  font-size: 14px; font-weight: 600;
   color: var(--text-1);
   letter-spacing: -0.015em;
   line-height: 1.2;
@@ -439,10 +438,9 @@ td[align="right"], .num, .tabular {
   gap: 24px;
 }
 .page-title {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 34px; font-weight: 600;
+  font-size: 26px; font-weight: 700;
   letter-spacing: -0.025em;
-  line-height: 1.1;
+  line-height: 1.15;
   margin: 0;
   color: var(--text-1);
 }
@@ -460,9 +458,8 @@ td[align="right"], .num, .tabular {
   gap: 16px;
 }
 .section-title {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 20px; font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: -0.015em;
   line-height: 1.2;
   margin: 0;
   color: var(--text-1);
@@ -525,12 +522,14 @@ td[align="right"], .num, .tabular {
 }
 .kpi:hover { border-color: var(--border-strong); }
 .kpi.kpi-hero {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f5ff 100%);
+  background: var(--surface-0);
 }
 .kpi.flash { background: var(--accent-soft); }
 .kpi-label {
-  font-size: 12px; font-weight: 500;
-  color: var(--text-3);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
   display: flex; align-items: center; gap: 7px;
 }
 .kpi-value-row {
@@ -546,12 +545,12 @@ td[align="right"], .num, .tabular {
   color: var(--text-1);
 }
 .kpi-hero .kpi-value {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
-  font-size: 64px;
-  letter-spacing: -0.035em;
+  font-size: 56px;
+  letter-spacing: -0.05em;
   color: var(--text-1);
-  font-weight: 600;
+  font-weight: 700;
 }
 .kpi-value.kpi-bad { color: var(--bad); }
 .kpi-unit, .kpi-of {
@@ -659,10 +658,9 @@ td[align="right"], .num, .tabular {
 .stage-dot.good { background: var(--good); }
 
 .stage-title {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 17px; font-weight: 600;
+  font-size: 15px; font-weight: 700;
   color: var(--text-1);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.012em;
   margin-top: -6px;
 }
 
@@ -974,11 +972,10 @@ td[align="right"], .num, .tabular {
   color: var(--text-3);
 }
 .action-what {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 16px; font-weight: 600;
+  font-size: 13.5px; font-weight: 600;
   color: var(--text-1);
-  line-height: 1.3;
-  letter-spacing: -0.015em;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
 }
 .action-chips {
   display: flex; flex-wrap: wrap; gap: 5px;
@@ -1034,8 +1031,7 @@ td[align="right"], .num, .tabular {
   letter-spacing: -0.1px;
 }
 .bigmove-title {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 26px; font-weight: 600;
+  font-size: 22px; font-weight: 700;
   color: var(--text-1);
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -1085,10 +1081,9 @@ td[align="right"], .num, .tabular {
 }
 .dd-h-l h2 {
   margin: 0;
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 28px; font-weight: 600;
-  letter-spacing: -0.022em;
-  line-height: 1.15;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 .dd-h-l .sub { font-size: 13px; color: var(--text-2); margin-top: 6px; }
 .dd-stats {
@@ -1306,8 +1301,7 @@ td[align="right"], .num, .tabular {
   font-family: var(--font-mono);
 }
 .insight-pattern {
-  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--text-1);
   font-weight: 500;
   line-height: 1.5;
