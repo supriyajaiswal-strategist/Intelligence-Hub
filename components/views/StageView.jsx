@@ -1,6 +1,7 @@
 import { STAGES, STAGE_UNITS } from '@/lib/data';
 import { StageVizSwitch } from '../StageViz';
 import { Sparkline } from '../Atoms';
+import RepairMenu from '../RepairMenu';
 
 const STAGE_ICONS = { procure: '📦', golive: '👁', attract: '✨', engage: '📞', convert: '🎯', refill: '🔄' };
 
@@ -8,11 +9,10 @@ function UnitTable({ stageKey }) {
   const units = STAGE_UNITS[stageKey] || [];
   if (!units.length) return null;
 
-  // Column config per stage
   if (stageKey === 'golive') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Stock</th><th>Vehicle</th><th>Stage</th><th>Days</th><th>Owner</th></tr></thead>
+        <thead><tr><th>Stock</th><th>Vehicle</th><th>Stage</th><th>Days</th><th>Owner</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.stock}>
@@ -21,6 +21,7 @@ function UnitTable({ stageKey }) {
               <td><span className="badge-warn">{u.stage}</span></td>
               <td className="mono-cell"><span className={u.days >= 7 ? 'badge-bad' : 'badge-warn'}>{u.days}d</span></td>
               <td>{u.owner}</td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.stock} /></td>
             </tr>
           ))}
         </tbody>
@@ -31,7 +32,7 @@ function UnitTable({ stageKey }) {
   if (stageKey === 'engage') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Name</th><th>Score</th><th>Vehicle</th><th>Source</th><th>Aged</th><th>Stage</th></tr></thead>
+        <thead><tr><th>Name</th><th>Score</th><th>Vehicle</th><th>Source</th><th>Aged</th><th>Stage</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.name}>
@@ -41,6 +42,7 @@ function UnitTable({ stageKey }) {
               <td className="mono-cell">{u.source}</td>
               <td className="mono-cell"><span className="badge-bad">{u.aged}</span></td>
               <td><span className="badge-warn">{u.stage}</span></td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.name} /></td>
             </tr>
           ))}
         </tbody>
@@ -51,7 +53,7 @@ function UnitTable({ stageKey }) {
   if (stageKey === 'convert') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Name</th><th>Stage</th><th>Mgr TO</th><th>Rep</th><th>Vehicle</th><th>Days</th></tr></thead>
+        <thead><tr><th>Name</th><th>Stage</th><th>Mgr TO</th><th>Rep</th><th>Vehicle</th><th>Days</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.name}>
@@ -61,6 +63,7 @@ function UnitTable({ stageKey }) {
               <td>{u.salesperson}</td>
               <td>{u.vehicle}</td>
               <td className="mono-cell">{u.days}d</td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.name} /></td>
             </tr>
           ))}
         </tbody>
@@ -71,7 +74,7 @@ function UnitTable({ stageKey }) {
   if (stageKey === 'procure') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Segment</th><th>Need</th><th>Source</th><th>Candidates</th><th>ETA</th></tr></thead>
+        <thead><tr><th>Segment</th><th>Need</th><th>Source</th><th>Candidates</th><th>ETA</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.id}>
@@ -80,6 +83,7 @@ function UnitTable({ stageKey }) {
               <td>{u.source}</td>
               <td className="mono-cell"><span className="badge-good">{u.candidates}</span></td>
               <td className="mono-cell">{u.eta}</td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.id} /></td>
             </tr>
           ))}
         </tbody>
@@ -90,7 +94,7 @@ function UnitTable({ stageKey }) {
   if (stageKey === 'attract') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Stock</th><th>Vehicle</th><th>Age</th><th>VDP</th><th>Leads</th><th>Price</th><th>Issue</th></tr></thead>
+        <thead><tr><th>Stock</th><th>Vehicle</th><th>Age</th><th>VDP</th><th>Leads</th><th>Price</th><th>Issue</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.stock}>
@@ -101,6 +105,7 @@ function UnitTable({ stageKey }) {
               <td className="mono-cell">{u.leads}</td>
               <td><span className={u.price === 'over' ? 'badge-warn' : 'badge-good'}>{u.price}</span></td>
               <td style={{ fontSize: 11, color: 'var(--text-2)' }}>{u.issue}</td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.stock} /></td>
             </tr>
           ))}
         </tbody>
@@ -111,7 +116,7 @@ function UnitTable({ stageKey }) {
   if (stageKey === 'refill') {
     return (
       <table className="unit-table">
-        <thead><tr><th>Segment</th><th>Sold</th><th>Queued</th><th>Source</th></tr></thead>
+        <thead><tr><th>Segment</th><th>Sold</th><th>Queued</th><th>Source</th><th className="repair-th">Repair</th></tr></thead>
         <tbody>
           {units.map((u) => (
             <tr key={u.id}>
@@ -119,6 +124,7 @@ function UnitTable({ stageKey }) {
               <td className="mono-cell">{u.soldCount}</td>
               <td className="mono-cell"><span className={u.queue === 0 ? 'badge-bad' : u.queue < u.soldCount ? 'badge-warn' : 'badge-good'}>{u.queue}</span></td>
               <td style={{ fontSize: 11, color: 'var(--text-2)' }}>{u.replacement}</td>
+              <td><RepairMenu stageKey={stageKey} unitId={u.id} /></td>
             </tr>
           ))}
         </tbody>
@@ -193,7 +199,10 @@ export default function StageView({ stageKey }) {
           </div>
 
           <div className="dd-card">
-            <h3>Units in Stage</h3>
+            <div className="dd-card-head">
+              <h3>Units in Stage — repair before auction</h3>
+              <span className="dd-card-hint">Pick a lever per unit. Auction is last resort.</span>
+            </div>
             <UnitTable stageKey={stageKey} />
           </div>
         </div>
@@ -224,7 +233,7 @@ export default function StageView({ stageKey }) {
           </div>
 
           <div className="dd-card">
-            <h3>Recovery Action</h3>
+            <h3>Recommended Action</h3>
             <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', marginBottom: 12 }}>
               {stage.action}
             </div>
