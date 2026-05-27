@@ -18,14 +18,6 @@ export default function Sidebar({ view, setView, collapsed, setCollapsed }) {
   return (
     <div className="sidebar">
       <div className="sb-brand">
-        <span className="sb-brand-mark">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-            <circle cx="6" cy="6" r="3" />
-            <circle cx="18" cy="6" r="3" opacity="0.85" />
-            <circle cx="6" cy="18" r="3" opacity="0.85" />
-            <circle cx="18" cy="18" r="3" opacity="0.7" />
-          </svg>
-        </span>
         <div className="sb-brand-text">
           <div className="sb-brand-name">Spyne IH</div>
           <div className="sb-brand-store">{STORE.name}</div>
