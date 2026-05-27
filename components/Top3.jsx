@@ -44,11 +44,10 @@ export default function Top3({ setView }) {
             className={`action ${cleared.has(it.id) ? 'cleared' : ''}`}
             onClick={() => setView({ type: 'stage', key: it.stageKey })}
           >
-            <div className={`action-pri ${it.priority}`} />
             <div className="action-body">
               <div className="action-meta">
                 <span className="action-stage">{it.stage}</span>
-                <span className="action-priority">{it.priority} priority</span>
+                <span className={`action-priority ${it.priority}`}>{it.priority} priority</span>
               </div>
               <div className="action-what">{it.what}</div>
               <div className="action-chips">

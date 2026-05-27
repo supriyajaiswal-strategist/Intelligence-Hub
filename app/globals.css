@@ -640,9 +640,7 @@ td[align="right"], .num, .tabular {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
-.stage.bad { border-top: 2px solid var(--bad); padding-top: 19px; }
-.stage.warn { border-top: 2px solid var(--warn); padding-top: 19px; }
-.stage.good { border-top: 2px solid var(--good); padding-top: 19px; }
+/* Status carried by the status-dot + colored TAT number — never by card edges */
 
 .stage-head {
   display: flex; align-items: center; justify-content: space-between;
@@ -933,10 +931,10 @@ td[align="right"], .num, .tabular {
 }
 .action {
   display: grid;
-  grid-template-columns: 4px 1fr auto auto;
+  grid-template-columns: 1fr auto auto;
   gap: 18px;
   align-items: center;
-  padding: 20px 22px;
+  padding: 18px 22px;
   border-bottom: 1px solid var(--border);
   cursor: pointer;
   transition: background .12s var(--ease);
@@ -946,13 +944,9 @@ td[align="right"], .num, .tabular {
 .action.cleared { opacity: 0.4; }
 .action.cleared .action-what,
 .action.cleared .action-chips { text-decoration: line-through; }
-.action-pri {
-  width: 4px;
-  align-self: stretch;
-  border-radius: 4px;
-}
-.action-pri.bad { background: var(--bad); }
-.action-pri.warn { background: var(--warn); }
+/* Priority carried by the .action-priority text colour, not a rail */
+.action-priority.bad { color: var(--bad); font-weight: 600; }
+.action-priority.warn { color: var(--warn); font-weight: 600; }
 
 .action-body {
   min-width: 0;
