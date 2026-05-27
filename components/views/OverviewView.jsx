@@ -1,4 +1,6 @@
 import Pulse from '../Pulse';
+import TodayTickers from '../TodayTickers';
+import Trajectory from '../Trajectory';
 import Journey from '../Journey';
 import Top3 from '../Top3';
 import BigMove from '../BigMove';
@@ -23,6 +25,8 @@ export default function OverviewView({ ints, setView }) {
       </header>
 
       <Pulse />
+      <TodayTickers />
+      <Trajectory />
       <Journey ints={ints} setView={setView} />
       <Top3 setView={setView} />
       <BigMove />
