@@ -1,52 +1,55 @@
 /* ============================================================
    SPYNE INTELLIGENCE HUB
-   Design system: Stripe-style minimalism + Spyne brand
-   Font: General Sans (Fontshare)
+   Fonts: Inter Tight (body) · Fraunces (display) · JetBrains Mono (numerics)
+   Palette: slate · aligned with v0 Expansion Playbook dashboard
    ============================================================ */
 
 :root {
   /* Surfaces */
   --bg: #fafafa;
   --surface-0: #ffffff;
-  --surface-1: #f7f7f8;
-  --surface-2: #f1f1f3;
-  --surface-3: #e8e8eb;
+  --surface-1: #f8fafc;
+  --surface-2: #f1f5f9;
+  --surface-3: #e2e8f0;
 
-  /* Borders — kept very subtle */
-  --border: #ededef;
-  --border-strong: #d8d9de;
+  /* Borders */
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
 
-  /* Text — high-contrast scale */
-  --text-1: #0a0e1a;
-  --text-2: #515767;
-  --text-3: #8a8f9d;
-  --text-4: #c4c7d2;
+  /* Text — slate scale */
+  --text-1: #0f172a;
+  --text-2: #475569;
+  --text-3: #94a3b8;
+  --text-4: #cbd5e1;
 
-  /* Brand — used sparingly */
-  --accent: #4600F2;
-  --accent-hover: #3a00c8;
-  --accent-soft: rgba(70, 0, 242, 0.06);
-  --accent-soft-2: rgba(70, 0, 242, 0.11);
-  --accent-border: rgba(70, 0, 242, 0.18);
-
-  /* Status */
+  /* Status — exact dashboard tokens */
   --good: #16a34a;
   --good-soft: rgba(22, 163, 74, 0.08);
-  --warn: #ed8939;
-  --warn-soft: rgba(237, 137, 57, 0.10);
-  --bad: #e83e54;
-  --bad-soft: rgba(232, 62, 84, 0.08);
-  --info: #4a79f3;
-  --info-soft: rgba(74, 121, 243, 0.09);
+  --warn: #d97706;
+  --warn-soft: rgba(217, 119, 6, 0.10);
+  --bad: #dc2626;
+  --bad-soft: rgba(220, 38, 38, 0.08);
+  --info: #2563eb;
+  --info-soft: rgba(37, 99, 235, 0.08);
+
+  /* Clickable */
+  --link: #2563eb;
+  --link-hover: #1d4ed8;
+
+  /* Brand (Spyne accent — used very sparingly) */
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.06);
+  --accent-soft-2: rgba(37, 99, 235, 0.11);
+  --accent-border: rgba(37, 99, 235, 0.20);
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(10, 14, 26, 0.04);
-  --shadow-md: 0 4px 14px rgba(10, 14, 26, 0.06);
-  --shadow-lg: 0 16px 40px rgba(10, 14, 26, 0.10);
-  --shadow-accent: 0 8px 26px rgba(70, 0, 242, 0.22);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.10);
 
   --radius: 10px;
-  --radius-sm: 7px;
+  --radius-sm: 6px;
   --radius-lg: 14px;
 
   --sidebar-w: 232px;
@@ -54,29 +57,43 @@
   --topbar-h: 56px;
 
   --ease: cubic-bezier(0.25, 0.8, 0.25, 1);
-
-  --font-sans: 'General Sans', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Monaco, monospace;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-sans), 'Inter Tight', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   background: var(--bg);
   color: var(--text-1);
   font-size: 13.5px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'ss01', 'cv11';
 }
 button { font-family: inherit; }
 .mono {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, 'SF Mono', Monaco, monospace;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
 }
+.serif {
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+}
+
+/* Tabular nums on every right-aligned numeric cell + cells classed .num */
+td[align="right"], .num, .tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Clickable convention from dashboard spec */
+.clickable {
+  color: var(--link);
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.clickable:hover { color: var(--link-hover); }
 
 /* ============== SHELL ============== */
 .shell {
@@ -282,9 +299,10 @@ button { font-family: inherit; }
 }
 .tb-left { display: flex; align-items: center; gap: 28px; flex: 1; min-width: 0; }
 .tb-title {
-  font-size: 14.5px; font-weight: 600;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 16px; font-weight: 600;
   color: var(--text-1);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.015em;
   line-height: 1.2;
 }
 .tb-sub {
@@ -421,9 +439,10 @@ button { font-family: inherit; }
   gap: 24px;
 }
 .page-title {
-  font-size: 30px; font-weight: 600;
-  letter-spacing: -0.8px;
-  line-height: 1.15;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 34px; font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
   margin: 0;
   color: var(--text-1);
 }
@@ -441,8 +460,9 @@ button { font-family: inherit; }
   gap: 16px;
 }
 .section-title {
-  font-size: 17px; font-weight: 600;
-  letter-spacing: -0.3px;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 20px; font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1.2;
   margin: 0;
   color: var(--text-1);
@@ -518,16 +538,20 @@ button { font-family: inherit; }
   gap: 8px;
 }
 .kpi-value {
-  font-size: 48px; font-weight: 500;
-  letter-spacing: -1.6px;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 44px; font-weight: 600;
+  letter-spacing: -0.04em;
   line-height: 1;
   color: var(--text-1);
 }
 .kpi-hero .kpi-value {
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-variant-numeric: tabular-nums;
   font-size: 64px;
-  letter-spacing: -2.4px;
-  color: var(--accent);
-  font-weight: 500;
+  letter-spacing: -0.035em;
+  color: var(--text-1);
+  font-weight: 600;
 }
 .kpi-value.kpi-bad { color: var(--bad); }
 .kpi-unit, .kpi-of {
@@ -635,9 +659,10 @@ button { font-family: inherit; }
 .stage-dot.good { background: var(--good); }
 
 .stage-title {
-  font-size: 15px; font-weight: 600;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 17px; font-weight: 600;
   color: var(--text-1);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.015em;
   margin-top: -6px;
 }
 
@@ -646,8 +671,10 @@ button { font-family: inherit; }
   flex-wrap: wrap;
 }
 .stage-tat-val {
-  font-size: 32px; font-weight: 500;
-  letter-spacing: -1px;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 30px; font-weight: 600;
+  letter-spacing: -0.03em;
   line-height: 1;
   color: var(--text-1);
 }
@@ -702,8 +729,11 @@ button { font-family: inherit; }
   margin-top: auto;
 }
 .stage-cost {
-  font-size: 13px; font-weight: 600;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px; font-weight: 700;
   color: var(--bad);
+  letter-spacing: -0.01em;
 }
 .stage-arrow {
   font-size: 14px;
@@ -944,10 +974,11 @@ button { font-family: inherit; }
   color: var(--text-3);
 }
 .action-what {
-  font-size: 14px; font-weight: 500;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 16px; font-weight: 600;
   color: var(--text-1);
-  line-height: 1.4;
-  letter-spacing: -0.1px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
 }
 .action-chips {
   display: flex; flex-wrap: wrap; gap: 5px;
@@ -967,9 +998,11 @@ button { font-family: inherit; }
 .chip.good { background: var(--good-soft); color: var(--good); }
 
 .action-money {
-  font-size: 15px; font-weight: 600;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 16px; font-weight: 700;
   color: var(--bad);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
@@ -1001,10 +1034,11 @@ button { font-family: inherit; }
   letter-spacing: -0.1px;
 }
 .bigmove-title {
-  font-size: 22px; font-weight: 600;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 26px; font-weight: 600;
   color: var(--text-1);
-  letter-spacing: -0.5px;
-  line-height: 1.25;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   margin: 4px 0 0;
 }
 .bigmove-sub {
@@ -1025,9 +1059,11 @@ button { font-family: inherit; }
   position: relative;
 }
 .bigmove-stat-v {
-  font-size: 22px; font-weight: 600;
-  color: var(--accent);
-  letter-spacing: -0.6px;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 24px; font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.025em;
   line-height: 1;
 }
 .bigmove-stat-l {
@@ -1049,9 +1085,10 @@ button { font-family: inherit; }
 }
 .dd-h-l h2 {
   margin: 0;
-  font-size: 24px; font-weight: 600;
-  letter-spacing: -0.6px;
-  line-height: 1.2;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 28px; font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
 }
 .dd-h-l .sub { font-size: 13px; color: var(--text-2); margin-top: 6px; }
 .dd-stats {
@@ -1067,9 +1104,10 @@ button { font-family: inherit; }
   font-weight: 500;
 }
 .dd-stat .v {
-  font-family: var(--font-mono);
-  font-size: 26px; font-weight: 500;
-  letter-spacing: -0.6px;
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 26px; font-weight: 700;
+  letter-spacing: -0.025em;
   line-height: 1;
 }
 .dd-stat .v.bad { color: var(--bad); }
@@ -1164,10 +1202,12 @@ button { font-family: inherit; }
 .bleed-name { font-size: 13px; color: var(--text-1); font-weight: 500; }
 .bleed-detail { font-size: 11.5px; color: var(--text-2); margin-top: 3px; }
 .bleed-impact {
-  font-family: var(--font-mono);
+  font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 14px;
   color: var(--bad);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   text-align: right;
 }
 
@@ -1266,7 +1306,8 @@ button { font-family: inherit; }
   font-family: var(--font-mono);
 }
 .insight-pattern {
-  font-size: 14px;
+  font-family: var(--font-serif), 'Fraunces', Georgia, serif;
+  font-size: 16px;
   color: var(--text-1);
   font-weight: 500;
   line-height: 1.5;
