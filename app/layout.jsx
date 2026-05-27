@@ -1,26 +1,4 @@
-import { Fraunces, Inter_Tight, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-serif',
-  display: 'swap',
-});
-
-const interTight = Inter_Tight({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-sans',
-  display: 'swap',
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-mono',
-  display: 'swap',
-});
 
 export const metadata = {
   title: 'Spyne Intelligence Hub · Westgate Honda',
@@ -29,7 +7,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${interTight.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en">
+      <head>
+        {/* General Sans (Fontshare) — editorial, premium sans */}
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=jetbrains-mono@400,500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
