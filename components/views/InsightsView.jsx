@@ -1,5 +1,6 @@
 import { SPOTTED_FEED } from '@/lib/data';
 import { Icon } from '../Atoms';
+import BackNav from '../BackNav';
 
 const TYPE_COLORS = {
   workflow: 'var(--accent)',
@@ -8,9 +9,10 @@ const TYPE_COLORS = {
   market: 'var(--good)',
 };
 
-export default function InsightsView() {
+export default function InsightsView({ setView }) {
   return (
     <div className="canvas">
+      <BackNav setView={setView} />
       <div className="greet">
         <div>
           <h1>Spyne Spotted</h1>

@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import { runEngine } from '@/lib/engine';
 import { STORE, IMPACT, TRAJECTORY } from '@/lib/data';
+import BackNav from '../BackNav';
 
-// Huddle Brief — auto-generated from engine state.
-// 4 sections: Yesterday / Today's 3 Priorities / Market Pulse / One Problem.
-// On the FIRST MONDAY of the month, a Monthly Snapshot opens the brief.
+// Huddle Brief: auto-generated from engine state.
+// 4 sections (Yesterday / Today's 3 Priorities / Market Pulse / One Problem),
+// plus a Monthly Snapshot opening on the first Monday of the month.
 
-export default function HuddleBriefView() {
+export default function HuddleBriefView({ setView }) {
   const { today, store } = runEngine();
   const [sent, setSent] = useState(null);
 
@@ -22,6 +23,7 @@ export default function HuddleBriefView() {
 
   return (
     <div className="canvas-v2 huddle">
+      <BackNav setView={setView} />
       <header className="huddle-head">
         <div>
           <div className="huddle-eyebrow">Huddle Brief</div>

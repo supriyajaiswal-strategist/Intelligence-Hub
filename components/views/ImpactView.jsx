@@ -2,13 +2,15 @@
 import { useState } from 'react';
 import { TRAJECTORY, IMPACT, STORE } from '@/lib/data';
 import TrajectoryChart from '../TrajectoryChart';
+import BackNav from '../BackNav';
 
-export default function ImpactView() {
+export default function ImpactView({ setView }) {
   const [showWhy, setShowWhy] = useState(false);
   const progressPct = Math.round((IMPACT.recoveredToDate / IMPACT.annualizedRunRate) * 100);
 
   return (
     <div className="canvas-v2 impact">
+      <BackNav setView={setView} />
       <header className="impact-head">
         <div className="impact-eyebrow">Impact · {STORE.name}</div>
         <h1 className="impact-title">Your business since Spyne went live</h1>

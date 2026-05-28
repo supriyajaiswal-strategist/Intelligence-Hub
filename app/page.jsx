@@ -52,10 +52,10 @@ export default function Page() {
 
         {view.type === 'overview'  && <OverviewView setView={setView} />}
         {view.type === 'stage'     && <StageView stageKey={view.key} setView={setView} />}
-        {view.type === 'insights'  && <InsightsView />}
-        {view.type === 'decisions' && <DecisionsView />}
-        {view.type === 'impact'    && <ImpactView />}
-        {view.type === 'huddle'    && <HuddleBriefView />}
+        {view.type === 'insights'  && <InsightsView setView={setView} />}
+        {view.type === 'decisions' && <DecisionsView setView={setView} />}
+        {view.type === 'impact'    && <ImpactView setView={setView} />}
+        {view.type === 'huddle'    && <HuddleBriefView setView={setView} />}
       </div>
 
       <Copilot />

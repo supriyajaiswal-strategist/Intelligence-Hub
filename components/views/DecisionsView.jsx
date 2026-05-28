@@ -1,14 +1,16 @@
 import { DECISIONS } from '@/lib/data';
+import BackNav from '../BackNav';
 
 const STATUS_ORDER = { pending: 0, running: 1, queued: 2, scheduled: 3, cleared: 4 };
 
-export default function DecisionsView() {
+export default function DecisionsView({ setView }) {
   const sorted = [...DECISIONS].sort((a, b) => (STATUS_ORDER[a.status] ?? 9) - (STATUS_ORDER[b.status] ?? 9));
   const totalRecovered = DECISIONS.filter((d) => d.status === 'cleared').reduce((s, d) => s + d.recovered, 0);
   const pending = DECISIONS.filter((d) => ['pending', 'running', 'queued', 'scheduled'].includes(d.status)).length;
 
   return (
     <div className="canvas">
+      <BackNav setView={setView} />
       <div className="greet">
         <div>
           <h1>Decision Log</h1>
