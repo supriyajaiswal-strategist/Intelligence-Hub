@@ -133,8 +133,8 @@ body { background: var(--st-bg); color: var(--st-text-1); }
 
 /* Layout shell ============================================== */
 .canvas-v2 {
-  padding: 28px 36px 80px;
-  max-width: 1200px;
+  padding: 28px 40px 80px;
+  max-width: 1600px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -310,8 +310,8 @@ body { background: var(--st-bg); color: var(--st-text-1); }
   font-variant-numeric: tabular-nums;
 }
 
-/* TTS — clean horizontal stage row (table-like) ============= */
-.tts-v2 { display: flex; flex-direction: column; gap: 14px; }
+/* TTS — Time to Sell journey, 6 rich data-cards =========== */
+.tts-v2 { display: flex; flex-direction: column; gap: 16px; }
 .tts-head {
   display: flex;
   align-items: flex-end;
@@ -325,11 +325,11 @@ body { background: var(--st-bg); color: var(--st-text-1); }
 }
 .tts-hero {
   display: flex; align-items: baseline; gap: 8px;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 .tts-hero .mono {
   font-family: inherit;
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 600;
   letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
@@ -337,96 +337,347 @@ body { background: var(--st-bg); color: var(--st-text-1); }
 }
 .tts-hero-unit { font-size: 15px; color: var(--st-text-3); font-weight: 500; }
 .tts-hero-meta {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
+  display: inline-flex; align-items: baseline; gap: 10px;
   margin-top: 4px;
   font-size: 12.5px;
 }
 .tts-hero-meta .mono { font-family: inherit; font-weight: 600; font-variant-numeric: tabular-nums; }
-.tts-flow-hint {
-  font-size: 11px;
-  letter-spacing: 0;
-  text-transform: none;
-  color: var(--st-text-3);
-  font-weight: 400;
-  white-space: nowrap;
-}
 
 .tts-swim {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0;
-  background: var(--st-surface);
-  border: 1px solid var(--st-border);
-  border-radius: var(--st-radius-lg);
-  overflow: hidden;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
 }
 .tts-card {
   position: relative;
   background: var(--st-surface);
-  border: none;
-  border-right: 1px solid var(--st-border);
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius-lg);
+  padding: 18px 20px 16px;
+  display: flex; flex-direction: column;
+  gap: 14px;
   cursor: pointer;
   font-family: inherit;
   text-align: left;
-  transition: background .12s var(--ease);
+  transition: border-color .12s var(--ease), transform .12s var(--ease);
 }
-.tts-card:last-child { border-right: none; }
-.tts-card:hover { background: var(--st-surface-hov); }
-.tts-card-label {
-  font-size: 11.5px;
-  font-weight: 500;
+.tts-card:hover { border-color: var(--st-border-strong); transform: translateY(-1px); }
+.tts-card-head { display: flex; flex-direction: column; gap: 3px; }
+.tts-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--st-text-1);
+  letter-spacing: -0.005em;
+  margin: 0;
+  line-height: 1.2;
+}
+.tts-card-summary {
+  font-size: 12px;
   color: var(--st-text-3);
-  letter-spacing: 0;
-  text-transform: none;
+  line-height: 1.35;
+  margin: 0;
 }
-.tts-card-tat {
+.tts-card-numbers {
   display: flex;
-  align-items: baseline;
-  gap: 2px;
-  margin-top: 2px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--st-border);
 }
+.tts-card-tat-block { display: flex; flex-direction: column; gap: 2px; }
 .tts-card-tat-val {
   font-family: inherit;
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
   color: var(--st-text-1);
+  line-height: 1;
 }
 .tts-card-tat-val.bad  { color: var(--st-bad); }
 .tts-card-tat-val.warn { color: var(--st-warn); }
 .tts-card-tat-val.good { color: var(--st-good); }
 .tts-card-tat-unit {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--st-text-3);
   font-weight: 500;
   margin-left: 2px;
 }
-.tts-card-target {
+.tts-card-tat-target {
   font-size: 11.5px;
-  color: var(--st-text-3);
   font-variant-numeric: tabular-nums;
 }
-.tts-card-cost {
+.tts-card-over {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.tts-card-over.bad  { color: var(--st-bad);  background: var(--st-bad-soft); }
+.tts-card-over.warn { color: var(--st-warn); background: var(--st-warn-soft); }
+.tts-card-over.good { color: var(--st-good); background: var(--st-good-soft); }
+
+.tts-card-bottom {
+  margin-top: auto;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+.tts-card-tagline {
   font-size: 12.5px;
+  color: var(--st-text-2);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+.tts-card-cost-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--st-border);
+}
+.tts-card-cost {
+  font-size: 13px;
   font-weight: 600;
   color: var(--st-bad);
   font-variant-numeric: tabular-nums;
-  margin-top: auto;
-  padding-top: 14px;
 }
-.tts-card-cost-cadence {
+.tts-card-cost-cadence { font-size: 11px; }
+.tts-card-cta {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+.tts-card:hover .tts-card-cta { color: var(--st-accent); }
+
+/* ── Stage viz: TTF recon pipeline ────────────────────────── */
+.viz-recon { display: flex; align-items: center; }
+.viz-recon-pipe {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+.viz-recon-cell {
+  position: relative;
+  background: var(--st-surface-alt);
+  border-radius: 4px;
+  padding: 10px 6px 8px;
+  text-align: center;
+  border: 1px solid var(--st-border);
+}
+.viz-recon-cell.bottleneck {
+  background: var(--st-bad-soft);
+  border-color: rgba(223, 27, 65, 0.25);
+}
+.viz-recon-count {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--st-text-1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.viz-recon-cell.bottleneck .viz-recon-count { color: var(--st-bad); }
+.viz-recon-name {
+  font-size: 10.5px;
+  font-weight: 500;
+  margin-top: 3px;
+}
+.viz-recon-badge {
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--st-bad);
+  color: white;
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stage viz: TTL publish flow ──────────────────────────── */
+.viz-publish {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  align-items: stretch;
+}
+.viz-publish-step {
+  background: var(--st-surface-alt);
+  border: 1px solid var(--st-border);
+  border-radius: 4px;
+  padding: 10px 8px 8px;
+  display: flex; flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+.viz-publish-step.highlight {
+  background: var(--st-bad-soft);
+  border-color: rgba(223, 27, 65, 0.3);
+}
+.viz-publish-step.good   { background: var(--st-good-soft); border-color: rgba(14, 140, 65, 0.2); }
+.viz-publish-count {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--st-text-1);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.viz-publish-step.highlight .viz-publish-count { color: var(--st-bad); }
+.viz-publish-step.good      .viz-publish-count { color: var(--st-good); }
+.viz-publish-name {
   font-size: 11px;
-  color: var(--st-text-3);
+  color: var(--st-text-2);
+  margin-top: 4px;
+  font-weight: 500;
 }
-.tts-card-arrow { display: none; }
+.viz-publish-sub {
+  font-size: 10px;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* ── Stage viz: GEN issue bars ────────────────────────────── */
+.viz-issues { display: flex; flex-direction: column; gap: 6px; }
+.viz-issue-row {
+  display: grid;
+  grid-template-columns: 105px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+}
+.viz-issue-name { color: var(--st-text-2); }
+.viz-issue-track {
+  position: relative;
+  height: 8px;
+  background: var(--st-surface-hov);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.viz-issue-fill { height: 100%; border-radius: 4px; }
+.viz-issue-fill.bad  { background: var(--st-bad); }
+.viz-issue-fill.warn { background: var(--st-warn); }
+.viz-issue-count {
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--st-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stage viz: APT C response histogram ──────────────────── */
+.viz-resp { display: flex; flex-direction: column; gap: 6px; }
+.viz-resp-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  align-items: flex-end;
+  height: 80px;
+}
+.viz-resp-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.viz-resp-bar-wrap {
+  width: 100%;
+  height: 60px;
+  display: flex; align-items: flex-end;
+  background: var(--st-surface-alt);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.viz-resp-bar {
+  width: 100%;
+  min-height: 6px;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 3px;
+  border-radius: 4px 4px 0 0;
+}
+.viz-resp-bar.good { background: var(--st-good); }
+.viz-resp-bar.warn { background: var(--st-warn); }
+.viz-resp-bar.bad  { background: var(--st-bad); }
+.viz-resp-bar-n {
+  color: white;
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.viz-resp-label {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+.viz-resp-sla {
+  font-size: 11px;
+  text-align: center;
+}
+
+/* ── Stage viz: VISIT donut ───────────────────────────────── */
+.viz-donut {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  gap: 14px;
+}
+.viz-donut-svg { width: 100%; height: 100px; }
+.viz-donut-num {
+  font-size: 16px;
+  font-weight: 700;
+  fill: var(--st-text-1);
+  font-variant-numeric: tabular-nums;
+}
+.viz-donut-sub {
+  font-size: 7px;
+  fill: var(--st-text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.viz-donut-side { display: flex; flex-direction: column; gap: 6px; }
+.viz-donut-row {
+  display: flex; justify-content: space-between;
+  font-size: 11.5px;
+}
+.viz-donut-row-v {
+  font-weight: 600;
+  color: var(--st-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stage viz: SELL CONV funnel ──────────────────────────── */
+.viz-funnel { display: flex; flex-direction: column; gap: 5px; }
+.viz-funnel-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 36px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+.viz-funnel-name { color: var(--st-text-2); }
+.viz-funnel-row.bottleneck .viz-funnel-name { color: var(--st-bad); font-weight: 600; }
+.viz-funnel-track {
+  position: relative;
+  height: 8px;
+  background: var(--st-surface-hov);
+  border-radius: 4px;
+  overflow: visible;
+}
+.viz-funnel-fill {
+  height: 100%;
+  background: var(--st-text-2);
+  border-radius: 4px;
+}
+.viz-funnel-row.bottleneck .viz-funnel-fill { background: var(--st-bad); }
+.viz-funnel-bench {
+  position: absolute;
+  top: -2px;
+  width: 2px; height: 12px;
+  background: var(--st-text-2);
+}
+.viz-funnel-pct {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--st-text-1);
+}
 
 /* Priorities — table-style list ============================ */
 .prio-section { display: flex; flex-direction: column; gap: 12px; }
@@ -1148,13 +1399,13 @@ body { background: var(--st-bg); color: var(--st-text-1); }
 }
 
 /* Responsive ================================================ */
+@media (max-width: 1280px) {
+  .tts-swim { grid-template-columns: repeat(2, 1fr); }
+}
 @media (max-width: 1180px) {
   .pulse-grid { grid-template-columns: 1fr 1fr; }
   .kpi-tile:nth-child(2) { border-right: none; }
   .kpi-tile:nth-child(1), .kpi-tile:nth-child(2) { border-bottom: 1px solid var(--st-border); }
-  .tts-swim { grid-template-columns: repeat(3, 1fr); }
-  .tts-card:nth-child(3) { border-right: none; }
-  .tts-card:nth-child(1), .tts-card:nth-child(2), .tts-card:nth-child(3) { border-bottom: 1px solid var(--st-border); }
   .impact-charts { grid-template-columns: 1fr; }
   .prio-card { grid-template-columns: 28px 90px minmax(180px, 1fr) auto; }
 }
@@ -1162,7 +1413,7 @@ body { background: var(--st-bg); color: var(--st-text-1); }
   .canvas-v2 { padding: 20px 16px 80px; gap: 20px; }
   .pulse-grid { grid-template-columns: 1fr; }
   .pulse-today-row { grid-template-columns: 1fr; }
-  .tts-swim { grid-template-columns: 1fr 1fr; }
+  .tts-swim { grid-template-columns: 1fr; }
   .impact-charts { grid-template-columns: 1fr; }
   .huddle-doc { padding: 22px 20px; }
   .prio-card {
