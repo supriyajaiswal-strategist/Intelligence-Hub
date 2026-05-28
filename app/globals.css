@@ -1015,7 +1015,166 @@ body { background: var(--st-bg); color: var(--st-text-1); }
 .bigmove-v2-upside .mono { font-family: inherit; font-weight: 600; font-variant-numeric: tabular-nums; }
 .bigmove-v2-actions { display: flex; gap: 8px; padding-top: 4px; }
 
-/* Impact view =============================================== */
+/* Impact view — PAPER aesthetic (matches expansion-playbook charts) === */
+:root {
+  --paper-bg:    #f4f0e8;
+  --paper-card:  #faf6ec;
+  --paper-rule:  #d6cfbd;
+  --paper-ink:   #1a2233;
+  --paper-soft:  #6b6356;
+  --paper-faint: #8b8578;
+  --paper-violet:#7c4dff;
+  --paper-green: #22c55e;
+  --paper-green-soft: #d8eadd;
+}
+
+.canvas-v2.impact {
+  background: var(--paper-bg);
+  border-radius: var(--st-radius-lg);
+  padding: 36px 40px 56px;
+  max-width: 1600px;
+}
+/* When Impact is the active view, paint the whole canvas paper so the
+   surrounding chrome (sidebar, topbar) doesn't fight it. We do this
+   safely by NOT changing body background — only the .impact container. */
+
+.impact .impact-head { color: var(--paper-ink); }
+.impact .impact-eyebrow,
+.impact .impact-sub,
+.impact .impact-hero-runrate {
+  color: var(--paper-soft);
+}
+.impact .impact-title { color: var(--paper-ink); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+
+.impact .impact-hero {
+  background: var(--paper-card);
+  border: 1px solid var(--paper-rule);
+  color: var(--paper-ink);
+}
+.impact .impact-hero-num { color: var(--paper-ink); font-weight: 700; }
+.impact .impact-hero-bar { background: rgba(0,0,0,0.06); }
+.impact .impact-hero-bar-fill { background: var(--paper-violet); }
+
+/* Chart cards in paper style */
+.tj-card-v2 {
+  background: var(--paper-card);
+  border: 1px solid var(--paper-rule);
+  border-radius: var(--st-radius-lg);
+  padding: 26px 28px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tj-head-v2 {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.tj-h-l { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.tj-label-v2 {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--paper-soft);
+}
+.tj-value-row-v2 {
+  display: flex; align-items: baseline; gap: 14px;
+  flex-wrap: wrap;
+}
+.tj-value-v2 {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-ink);
+  line-height: 1;
+}
+.tj-unit-v2 {
+  font-size: 18px;
+  color: var(--paper-soft);
+  font-weight: 500;
+  margin-left: 2px;
+}
+.tj-delta-v2 {
+  background: var(--paper-green-soft);
+  color: #1f7a3b;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+
+.tj-h-r {
+  display: flex; flex-direction: column; gap: 4px;
+  text-align: right;
+}
+.tj-pre-label-v2 {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--paper-soft);
+}
+.tj-pre-value-v2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--paper-ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+.tj-svg-v2 { width: 100%; height: auto; display: block; margin-top: 4px; }
+.tj-axis-y-v2 {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--paper-faint);
+}
+.tj-axis-x-v2 {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--paper-faint);
+}
+.tj-live-label-v2 {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  fill: var(--paper-violet);
+}
+
+.impact .impact-charts {
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.impact .impact-why-toggle,
+.impact .impact-attribution {
+  background: var(--paper-card);
+  border-color: var(--paper-rule);
+  color: var(--paper-ink);
+}
+.impact .impact-attribution-title { color: var(--paper-ink); }
+.impact .impact-attribution-product { color: var(--paper-violet); }
+.impact .impact-attribution-impact { color: var(--paper-soft); }
+.impact .impact-attribution-foot { color: var(--paper-faint); }
+
+/* Back nav rendered on paper bg */
+.impact .dd-back-btn { color: var(--paper-soft); }
+.impact .dd-back-btn:hover { color: var(--paper-violet); }
+.impact .dd-back-stage {
+  background: var(--paper-card);
+  border-color: var(--paper-rule);
+  color: var(--paper-soft);
+}
+
+/* Old Stripe Impact chart styles (Stripe v2) ================ */
 .impact { gap: 24px; }
 .impact-head { display: flex; flex-direction: column; gap: 2px; }
 .impact-eyebrow {
