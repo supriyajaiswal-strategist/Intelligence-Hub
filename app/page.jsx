@@ -51,7 +51,7 @@ export default function Page() {
         />
 
         {view.type === 'overview'  && <OverviewView setView={setView} />}
-        {view.type === 'stage'     && <StageView stageKey={view.key} />}
+        {view.type === 'stage'     && <StageView stageKey={view.key} setView={setView} />}
         {view.type === 'insights'  && <InsightsView />}
         {view.type === 'decisions' && <DecisionsView />}
         {view.type === 'impact'    && <ImpactView />}

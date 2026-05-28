@@ -142,7 +142,7 @@ function UnitTable({ stageKey }) {
   return null;
 }
 
-export default function StageView({ stageKey }) {
+export default function StageView({ stageKey, setView }) {
   // Resolve: JJ stage (new) drives header/sparkline; legacy STAGES drives
   // the bleeds + units table + viz until we re-author those per-JJ-stage.
   const jjStage = JJ_TTS_STAGES.find((s) => s.key === stageKey);
@@ -154,13 +154,41 @@ export default function StageView({ stageKey }) {
   const pctile = stage?.peerPercentile;
   const ppTone = pctile != null ? (pctile < 25 ? 'bad' : pctile < 50 ? 'warn' : 'good') : 'neutral';
 
+  // Find adjacent JJ stages for prev/next navigation
+  const jjIdx = jjStage ? JJ_TTS_STAGES.findIndex((s) => s.key === stageKey) : -1;
+  const prevStage = jjIdx > 0 ? JJ_TTS_STAGES[jjIdx - 1] : null;
+  const nextStage = jjIdx >= 0 && jjIdx < JJ_TTS_STAGES.length - 1 ? JJ_TTS_STAGES[jjIdx + 1] : null;
+
+  const goBack = () => setView && setView({ type: 'overview' });
+
   return (
     <div className="canvas">
+      {/* Back nav */}
+      {setView && (
+        <nav className="dd-back-nav">
+          <button className="dd-back-btn" onClick={goBack}>
+            ← Back to Today
+          </button>
+          <div className="dd-back-stagenav">
+            {prevStage && (
+              <button className="dd-back-stage" onClick={() => setView({ type: 'stage', key: prevStage.key })}>
+                ← {prevStage.name}
+              </button>
+            )}
+            {nextStage && (
+              <button className="dd-back-stage" onClick={() => setView({ type: 'stage', key: nextStage.key })}>
+                {nextStage.name} →
+              </button>
+            )}
+          </div>
+        </nav>
+      )}
+
       {/* Header */}
       <div className="dd-header">
         <div className="dd-h-row">
           <div className="dd-h-l">
-            <h2>{jjStage ? `${jjStage.label} · ${jjStage.name}` : `${STAGE_ICONS[stage.key]} ${stage.num} · ${stage.name}`}</h2>
+            <h2>{jjStage ? jjStage.name : `${STAGE_ICONS[stage.key]} ${stage.num} · ${stage.name}`}</h2>
             <div className="sub">{jjStage ? jjStage.summary : stage.subtitle}</div>
           </div>
           <button className="btn ghost sm">↗ Export stage</button>
