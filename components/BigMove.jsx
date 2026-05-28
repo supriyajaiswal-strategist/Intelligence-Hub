@@ -1,24 +1,29 @@
-import { BIG_MOVE } from '@/lib/data';
+import { BIG_MOVE_LANDING } from '@/lib/data';
 
 export default function BigMove() {
+  const bm = BIG_MOVE_LANDING;
   return (
-    <section className="bigmove">
-      <div className="bigmove-l">
-        <div className="bigmove-tag">This week's biggest move</div>
-        <h3 className="bigmove-title">{BIG_MOVE.title}</h3>
-        <p className="bigmove-sub">{BIG_MOVE.sub}</p>
-        <div className="bigmove-actions">
-          <button className="btn">Open buy list</button>
-          <button className="btn ghost">Snooze 1 day</button>
-        </div>
-      </div>
-      <div className="bigmove-r">
-        {BIG_MOVE.impact.map((s) => (
-          <div key={s.l} className="bigmove-stat">
-            <div className="bigmove-stat-v mono">{s.v}</div>
-            <div className="bigmove-stat-l">{s.l}</div>
+    <section className="bigmove-v2">
+      <div className="bigmove-v2-eyebrow">This week's biggest move</div>
+      <h2 className="bigmove-v2-headline">{bm.headline}</h2>
+
+      <div className="bigmove-v2-numbers">
+        {bm.reasonNumbers.map((n) => (
+          <div key={n.label} className="bigmove-v2-num">
+            <span className="muted mono section-eyebrow">{n.label}</span>
+            <span className="mono bigmove-v2-num-v">{n.value}</span>
           </div>
         ))}
+      </div>
+
+      <div className="bigmove-v2-upside">
+        <span className="mono tone-good">+${bm.upside.toLocaleString()}</span>
+        <span className="muted"> · {bm.upsideNote}</span>
+      </div>
+
+      <div className="bigmove-v2-actions">
+        <button className="btn-primary-v2">{bm.primaryLabel}</button>
+        <button className="btn-ghost-v2">{bm.secondaryLabel}</button>
       </div>
     </section>
   );

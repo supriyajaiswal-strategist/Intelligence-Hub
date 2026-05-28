@@ -1,9 +1,16 @@
-import { STAGES, STAGE_UNITS } from '@/lib/data';
+import { STAGES, STAGE_UNITS, JJ_TTS_STAGES } from '@/lib/data';
 import { StageVizSwitch } from '../StageViz';
 import { Sparkline } from '../Atoms';
 import RepairMenu from '../RepairMenu';
+import StageTrendSpark from '../StageTrendSpark';
 
 const STAGE_ICONS = { procure: '📦', golive: '👁', attract: '✨', engage: '📞', convert: '🎯', refill: '🔄' };
+
+// When navigating from the new TTS swimlane (JJ keys ttf/ttl/gen/aptc/visit/sellconv),
+// look up the JJ stage first. Fallback to old STAGES for back-compat with the engine-test.
+const JJ_TO_LEGACY = {
+  ttf: 'golive', ttl: 'golive', gen: 'attract', aptc: 'engage', visit: 'convert', sellconv: 'convert',
+};
 
 function UnitTable({ stageKey }) {
   const units = STAGE_UNITS[stageKey] || [];
@@ -136,11 +143,16 @@ function UnitTable({ stageKey }) {
 }
 
 export default function StageView({ stageKey }) {
-  const stage = STAGES.find((s) => s.key === stageKey);
-  if (!stage) return null;
+  // Resolve: JJ stage (new) drives header/sparkline; legacy STAGES drives
+  // the bleeds + units table + viz until we re-author those per-JJ-stage.
+  const jjStage = JJ_TTS_STAGES.find((s) => s.key === stageKey);
+  const legacyKey = jjStage ? JJ_TO_LEGACY[stageKey] : stageKey;
+  const stage = STAGES.find((s) => s.key === legacyKey);
+  if (!stage && !jjStage) return null;
 
-  const pctile = stage.peerPercentile;
-  const ppTone = pctile < 25 ? 'bad' : pctile < 50 ? 'warn' : 'good';
+  const headerStage = jjStage || stage;
+  const pctile = stage?.peerPercentile;
+  const ppTone = pctile != null ? (pctile < 25 ? 'bad' : pctile < 50 ? 'warn' : 'good') : 'neutral';
 
   return (
     <div className="canvas">
@@ -148,103 +160,132 @@ export default function StageView({ stageKey }) {
       <div className="dd-header">
         <div className="dd-h-row">
           <div className="dd-h-l">
-            <h2>{STAGE_ICONS[stage.key]} {stage.num} · {stage.name}</h2>
-            <div className="sub">{stage.subtitle}</div>
+            <h2>{jjStage ? `${jjStage.label} · ${jjStage.name}` : `${STAGE_ICONS[stage.key]} ${stage.num} · ${stage.name}`}</h2>
+            <div className="sub">{jjStage ? jjStage.summary : stage.subtitle}</div>
           </div>
           <button className="btn ghost sm">↗ Export stage</button>
         </div>
+
+        {jjStage && <StageTrendSpark stage={jjStage} />}
         <div className="dd-stats">
           <div className="dd-stat">
             <div className="l">Current TAT</div>
-            <div className={`v ${stage.status}`}>{stage.tat}{stage.tatUnit || 'd'}</div>
+            <div className={`v ${headerStage.status}`}>{headerStage.tat}{headerStage.tatUnit || 'd'}</div>
           </div>
           <div className="dd-stat">
             <div className="l">Target</div>
-            <div className="v accent">{stage.target}{stage.tatUnit || 'd'}</div>
+            <div className="v accent">{headerStage.target}{headerStage.tatUnit || 'd'}</div>
           </div>
-          <div className="dd-stat">
-            <div className="l">Delta</div>
-            <div className={`v ${stage.status}`}>{stage.delta}</div>
-          </div>
-          <div className="dd-stat">
-            <div className="l">Peer Median</div>
-            <div className="v">{stage.peerMedian}{stage.tatUnit || 'd'}</div>
-          </div>
-          <div className="dd-stat">
-            <div className="l">Peer Rank</div>
-            <div className={`v ${ppTone}`}>p{pctile}</div>
-          </div>
+          {stage?.delta && (
+            <div className="dd-stat">
+              <div className="l">Delta</div>
+              <div className={`v ${stage.status}`}>{stage.delta}</div>
+            </div>
+          )}
+          {stage?.peerMedian && (
+            <div className="dd-stat">
+              <div className="l">Peer Median</div>
+              <div className="v">{stage.peerMedian}{stage.tatUnit || 'd'}</div>
+            </div>
+          )}
+          {pctile != null && (
+            <div className="dd-stat">
+              <div className="l">Peer Rank</div>
+              <div className={`v ${ppTone}`}>p{pctile}</div>
+            </div>
+          )}
           <div className="dd-stat">
             <div className="l">Cost of Delay</div>
-            <div className="v bad">−${stage.cost.toLocaleString()}{stage.costUnit}</div>
+            <div className="v bad">−${headerStage.cost.toLocaleString()}{headerStage.costUnit}</div>
           </div>
         </div>
+
+        {jjStage && (
+          <div className="dd-tagline-row">
+            <div className="dd-tagline">
+              <span className="muted section-eyebrow">Risk</span>
+              <span>{jjStage.riskTagline}</span>
+            </div>
+            <div className="dd-tagline">
+              <span className="muted section-eyebrow">Lever</span>
+              <span>{jjStage.leverTagline}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="dd-grid">
         {/* Left: bleeds + units */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div className="dd-card">
-            <h3>Ranked Bleeds</h3>
-            {stage.bleeds.map((b, i) => (
-              <div key={i} className="bleed-row">
-                <span className="bleed-rank">{i + 1}</span>
-                <div>
-                  <div className="bleed-name">{b.name}</div>
-                  <div className="bleed-detail">{b.detail}</div>
+          {stage?.bleeds && (
+            <div className="dd-card">
+              <h3>Ranked Bleeds</h3>
+              {stage.bleeds.map((b, i) => (
+                <div key={i} className="bleed-row">
+                  <span className="bleed-rank">{i + 1}</span>
+                  <div>
+                    <div className="bleed-name">{b.name}</div>
+                    <div className="bleed-detail">{b.detail}</div>
+                  </div>
+                  <span className="bleed-impact">{b.impact ? `−$${b.impact.toLocaleString()}` : '—'}</span>
                 </div>
-                <span className="bleed-impact">{b.impact ? `−$${b.impact.toLocaleString()}` : '—'}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className="dd-card">
             <div className="dd-card-head">
               <h3>Units in Stage — repair before auction</h3>
               <span className="dd-card-hint">Pick a lever per unit. Auction is last resort.</span>
             </div>
-            <UnitTable stageKey={stageKey} />
+            <UnitTable stageKey={legacyKey} />
           </div>
         </div>
 
         {/* Right: viz + trend */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div className="dd-card">
-            <h3>Stage Visualization</h3>
-            <div style={{ padding: '8px 0' }}>
-              <StageVizSwitch vizType={stage.vizType} viz={stage.viz} />
-            </div>
-          </div>
-
-          <div className="dd-card">
-            <h3>30-Day TAT Trend</h3>
-            <div className="trend-wrap">
-              <div className="trend-head">
-                <span className="l">TAT over 30 days</span>
-                <span className="v">{stage.tat}{stage.tatUnit || 'd'} today</span>
+          {stage?.vizType && (
+            <div className="dd-card">
+              <h3>Stage Visualization</h3>
+              <div style={{ padding: '8px 0' }}>
+                <StageVizSwitch vizType={stage.vizType} viz={stage.viz} />
               </div>
-              <Sparkline
-                data={stage.trend30d}
-                w={320}
-                h={48}
-                color={stage.status === 'bad' ? 'var(--bad)' : stage.status === 'warn' ? 'var(--warn)' : 'var(--good)'}
-              />
             </div>
-          </div>
+          )}
 
-          <div className="dd-card">
-            <h3>Recommended Action</h3>
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', marginBottom: 12 }}>
-              {stage.action}
+          {stage?.trend30d && (
+            <div className="dd-card">
+              <h3>30-Day TAT Trend</h3>
+              <div className="trend-wrap">
+                <div className="trend-head">
+                  <span className="l">TAT over 30 days</span>
+                  <span className="v">{stage.tat}{stage.tatUnit || 'd'} today</span>
+                </div>
+                <Sparkline
+                  data={stage.trend30d}
+                  w={320}
+                  h={48}
+                  color={stage.status === 'bad' ? 'var(--bad)' : stage.status === 'warn' ? 'var(--warn)' : 'var(--good)'}
+                />
+              </div>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 16, lineHeight: 1.5 }}>
-              {stage.bleeds[0]?.detail}
+          )}
+
+          {stage?.action && (
+            <div className="dd-card">
+              <h3>Recommended Action</h3>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-1)', marginBottom: 12 }}>
+                {stage.action}
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 16, lineHeight: 1.5 }}>
+                {stage.bleeds?.[0]?.detail}
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn">{stage.action}</button>
+                <button className="btn ghost">Log decision</button>
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button className="btn">{stage.action}</button>
-              <button className="btn ghost">Log decision</button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,93 +1,113 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { PULSE } from '@/lib/data';
-import { Sparkline } from './Atoms';
+import { runEngine } from '@/lib/engine';
+
+// Single-row Pulse: 4 KPI tiles + today/yesterday inline strip.
+// Money Meter ticks live from the engine.
 
 export default function Pulse() {
-  const [mot, setMot] = useState(PULSE.moneyOnTableStart);
-  const [flash, setFlash] = useState(false);
-  const tickDir = useRef(1);
+  // Money Meter — initial value from the engine, then we let it drift
+  // gently so it feels alive (Bloomberg variable reward).
+  const initial = useRef(null);
+  if (initial.current === null) initial.current = runEngine().moneyMeter.total;
+
+  const [mot, setMot] = useState(initial.current);
+  const dirRef = useRef(1);
 
   useEffect(() => {
     const iv = setInterval(() => {
       setMot((v) => {
-        const delta = (Math.random() * 80 + 20) * tickDir.current;
-        if (Math.random() < 0.15) tickDir.current *= -1;
-        return Math.max(8000, Math.round(v + delta));
+        const drift = (Math.random() * 80 + 20) * dirRef.current;
+        if (Math.random() < 0.18) dirRef.current *= -1;
+        return Math.max(5000, Math.round(v + drift));
       });
-      setFlash(true);
-      setTimeout(() => setFlash(false), 700);
-    }, 3800);
+    }, 4000);
     return () => clearInterval(iv);
   }, []);
 
-  const ttsDelta = PULSE.timeToSellPrev - PULSE.timeToSell;
-  const motTotal = PULSE.moneyOnTableBreakdown.reduce((s, i) => s + i.value, 0);
-  const paceW = (PULSE.pace / PULSE.goal) * 100;
-  const paceTone = paceW >= 85 ? 'good' : paceW >= 65 ? 'warn' : 'bad';
+  const eomDelta = PULSE.eomForecast - PULSE.grossMTD;
+  const pacePct = Math.round((PULSE.pace / PULSE.goal) * 100);
 
   return (
-    <section className="kpis">
-      {/* Hero: Time to Sell */}
-      <div className="kpi kpi-hero">
-        <div className="kpi-label">Time to Sell</div>
-        <div className="kpi-value-row">
-          <span className="kpi-value mono">{PULSE.timeToSell}</span>
-          <span className="kpi-unit">days</span>
-        </div>
-        <div className="kpi-meta">
-          <span className="trend down">↓ {ttsDelta}d since you joined Spyne</span>
-          <span className="kpi-sep">·</span>
-          <span>Target {PULSE.timeToSellTarget}d</span>
-        </div>
-        <div className="kpi-bar">
-          <div
-            className="kpi-bar-fill"
-            style={{
-              width: `${Math.min((PULSE.timeToSellTarget / PULSE.timeToSell) * 100, 100)}%`,
-            }}
-          />
-        </div>
+    <section className="pulse-v2">
+      <div className="pulse-grid">
+        <KpiTile
+          label="Gross MTD"
+          value={`$${PULSE.grossMTD}k`}
+          meta={`vs $${PULSE.grossLM}k LM · ${PULSE.grossMTD - PULSE.grossLM >= 0 ? '↑' : '↓'} ${Math.abs(PULSE.grossMTD - PULSE.grossLM)}k`}
+          tone={PULSE.grossMTD >= PULSE.grossLM ? 'good' : 'warn'}
+        />
+        <KpiTile
+          label="EOM Forecast"
+          value={`$${PULSE.eomForecast}k`}
+          meta={`+$${eomDelta}k in ${PULSE.daysLeft} days`}
+          tone="neutral"
+        />
+        <KpiTile
+          label="Money on Table"
+          value={`$${(mot / 1000).toFixed(1)}k`}
+          meta="ticking · 4 leaks live"
+          tone="bad"
+          live
+        />
+        <KpiTile
+          label="Units Pace"
+          value={`${PULSE.pace}/${PULSE.goal}`}
+          meta={`${pacePct}% · ${PULSE.goal - PULSE.pace} to goal`}
+          tone={pacePct >= 85 ? 'good' : pacePct >= 65 ? 'warn' : 'bad'}
+        />
       </div>
 
-      {/* Money on Table */}
-      <div className={`kpi ${flash ? 'flash' : ''}`}>
-        <div className="kpi-label">
-          <span className="live" /> Money on table
+      <div className="pulse-today">
+        <div className="pulse-today-row">
+          <span className="pulse-today-label">Today</span>
+          <TickerCell n={PULSE.todaySold}   l="sold"   y={PULSE.ySold} />
+          <TickerCell n={PULSE.todayLeads}  l="leads"  y={PULSE.yLeads} />
+          <TickerCell n={PULSE.todayAppts}  l="appts"  y={PULSE.yAppts} />
+          <TickerCell n={PULSE.todayVisits} l="visits" y={PULSE.yVisits} />
         </div>
-        <div className="kpi-value-row">
-          <span className="kpi-value mono kpi-bad">${(mot / 1000).toFixed(1)}k</span>
-        </div>
-        <div className="kpi-meta">Recoverable today across 6 stages</div>
-        <div className="kpi-stack">
-          {PULSE.moneyOnTableBreakdown.map((b) => (
-            <div
-              key={b.label}
-              style={{ width: `${(b.value / motTotal) * 100}%`, background: b.color }}
-              title={`${b.label}: $${b.value.toLocaleString()}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Units pace */}
-      <div className="kpi">
-        <div className="kpi-label">Units pace</div>
-        <div className="kpi-value-row">
-          <span className="kpi-value mono">{PULSE.pace}</span>
-          <span className="kpi-of">/ {PULSE.goal}</span>
-        </div>
-        <div className="kpi-meta">
-          {PULSE.daysLeft} days left · {PULSE.goal - PULSE.pace} units to goal
-        </div>
-        <div className="kpi-bar">
-          <div
-            className={`kpi-bar-fill ${paceTone}`}
-            style={{ width: `${paceW}%` }}
-          />
-          <div className="kpi-bar-mark" style={{ left: '85%' }} />
+        <div className="pulse-today-row pulse-today-yest">
+          <span className="pulse-today-label">Yesterday</span>
+          <YestCell v={PULSE.ySold} />
+          <YestCell v={PULSE.yLeads} />
+          <YestCell v={PULSE.yAppts} />
+          <YestCell v={PULSE.yVisits} />
         </div>
       </div>
     </section>
+  );
+}
+
+function KpiTile({ label, value, meta, tone = 'neutral', live }) {
+  return (
+    <div className="kpi-tile">
+      <div className="kpi-tile-label">
+        {live && <span className="live-dot" />}{label}
+      </div>
+      <div className={`kpi-tile-value mono ${tone}`}>{value}</div>
+      <div className="kpi-tile-meta">{meta}</div>
+    </div>
+  );
+}
+
+function TickerCell({ n, l, y }) {
+  const delta = n - y;
+  const tone = delta > 0 ? 'good' : delta < 0 ? 'bad' : 'flat';
+  const sign = delta > 0 ? '+' : '';
+  return (
+    <div className="ticker-cell">
+      <span className="ticker-n mono">{n}</span>
+      <span className="ticker-l">{l}</span>
+      {delta !== 0 && <span className={`ticker-d mono ${tone}`}>{sign}{delta}</span>}
+    </div>
+  );
+}
+function YestCell({ v }) {
+  return (
+    <div className="ticker-cell yest">
+      <span className="ticker-n mono">{v}</span>
+      <span className="ticker-l">&nbsp;</span>
+    </div>
   );
 }

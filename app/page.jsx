@@ -6,16 +6,20 @@ import OverviewView from '@/components/views/OverviewView';
 import StageView from '@/components/views/StageView';
 import InsightsView from '@/components/views/InsightsView';
 import DecisionsView from '@/components/views/DecisionsView';
+import ImpactView from '@/components/views/ImpactView';
+import HuddleBriefView from '@/components/views/HuddleBriefView';
 import Copilot from '@/components/Copilot';
-import { INT_LABELS } from '@/lib/data';
+import { INT_LABELS, JJ_TTS_STAGES } from '@/lib/data';
 
 const DEFAULT_INTS = Object.fromEntries(Object.keys(INT_LABELS).map((k) => [k, true]));
 
 const VIEW_META = {
-  overview:  { title: 'Overview',      sub: 'Westgate Honda · full store dashboard' },
-  stage:     { title: 'Stage Deep-Dive', sub: 'Click a stage for detailed analysis' },
+  overview:  { title: 'Today',         sub: 'Westgate Honda · daily ritual' },
+  stage:     { title: 'Stage',         sub: 'Risks, opportunities, levers' },
   insights:  { title: 'Spyne Spotted', sub: 'Cross-stage patterns · AI-detected' },
   decisions: { title: 'Decision Log',  sub: 'Every action · who · when · outcome' },
+  impact:    { title: 'Impact',        sub: 'Your business since Spyne went live' },
+  huddle:    { title: 'Huddle Brief',  sub: 'Auto-generated · sent at 7:15am' },
 };
 
 export default function Page() {
@@ -25,9 +29,12 @@ export default function Page() {
   const [time, setTime] = useState('mtd');
 
   const meta = VIEW_META[view.type] || VIEW_META.overview;
-  const title = view.type === 'stage' && view.key
-    ? `Stage: ${view.key.charAt(0).toUpperCase() + view.key.slice(1)}`
-    : meta.title;
+
+  let title = meta.title;
+  if (view.type === 'stage' && view.key) {
+    const stage = JJ_TTS_STAGES.find((s) => s.key === view.key);
+    title = stage ? `${stage.label} · ${stage.name}` : `Stage: ${view.key}`;
+  }
 
   return (
     <div className={`shell ${collapsed ? 'collapsed' : ''}`}>
@@ -43,10 +50,12 @@ export default function Page() {
           sub={meta.sub}
         />
 
-        {view.type === 'overview' && <OverviewView ints={ints} setView={setView} />}
-        {view.type === 'stage' && <StageView stageKey={view.key} />}
-        {view.type === 'insights' && <InsightsView />}
+        {view.type === 'overview'  && <OverviewView setView={setView} />}
+        {view.type === 'stage'     && <StageView stageKey={view.key} />}
+        {view.type === 'insights'  && <InsightsView />}
         {view.type === 'decisions' && <DecisionsView />}
+        {view.type === 'impact'    && <ImpactView />}
+        {view.type === 'huddle'    && <HuddleBriefView />}
       </div>
 
       <Copilot />

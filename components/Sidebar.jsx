@@ -1,14 +1,14 @@
-import { STAGES, STORE } from '@/lib/data';
+import { JJ_TTS_STAGES, STORE } from '@/lib/data';
 import { Icon } from './Atoms';
 
+// Icons per JJ stage. Sidebar groups: Overview → TTS Journey → Surfaces → Intelligence.
 const STAGE_ICONS = {
-  procure: 'truck', golive: 'eye', attract: 'sparkle',
-  engage: 'phone', convert: 'funnel', refill: 'refresh',
-};
-
-const STAGE_LABELS = {
-  procure: 'Procure', golive: 'Go Live', attract: 'Attract',
-  engage: 'Engage', convert: 'Convert', refill: 'Refill',
+  ttf:     'truck',
+  ttl:     'eye',
+  gen:     'sparkle',
+  aptc:    'phone',
+  visit:   'funnel',
+  sellconv:'star',
 };
 
 export default function Sidebar({ view, setView, collapsed, setCollapsed }) {
@@ -35,31 +35,49 @@ export default function Sidebar({ view, setView, collapsed, setCollapsed }) {
       <button
         className={`sb-item ${isActive({ type: 'overview' }) ? 'active' : ''}`}
         onClick={() => setView({ type: 'overview' })}
-        data-tip="Overview"
+        data-tip="Today"
       >
         <span className="ico"><Icon name="home" size={15} /></span>
-        <span className="lbl">Overview</span>
+        <span className="lbl">Today</span>
       </button>
 
-      <div className="sb-section">Journey</div>
-      {STAGES.map((s) => (
+      <div className="sb-section">Time to Sell</div>
+      {JJ_TTS_STAGES.map((s) => (
         <button
           key={s.key}
           className={`sb-item ${isActive({ type: 'stage', key: s.key }) ? 'active' : ''}`}
           onClick={() => setView({ type: 'stage', key: s.key })}
-          data-tip={`${s.num} · ${STAGE_LABELS[s.key] || s.name}`}
+          data-tip={`${s.label} · ${s.name}`}
         >
           <span className="ico"><Icon name={STAGE_ICONS[s.key]} size={15} /></span>
-          <span className="lbl">{s.num} · {s.name}</span>
+          <span className="lbl">{s.label} · {s.name}</span>
           <span className={`status-dot ${s.status}`} />
         </button>
       ))}
+
+      <div className="sb-section">Surfaces</div>
+      <button
+        className={`sb-item ${isActive({ type: 'huddle' }) ? 'active' : ''}`}
+        onClick={() => setView({ type: 'huddle' })}
+        data-tip="Huddle Brief"
+      >
+        <span className="ico"><Icon name="log" size={15} /></span>
+        <span className="lbl">Huddle Brief</span>
+      </button>
+      <button
+        className={`sb-item ${isActive({ type: 'impact' }) ? 'active' : ''}`}
+        onClick={() => setView({ type: 'impact' })}
+        data-tip="Impact"
+      >
+        <span className="ico"><Icon name="star" size={15} /></span>
+        <span className="lbl">Impact</span>
+      </button>
 
       <div className="sb-section">Intelligence</div>
       <button
         className={`sb-item ${isActive({ type: 'insights' }) ? 'active' : ''}`}
         onClick={() => setView({ type: 'insights' })}
-        data-tip="Spotted · 5"
+        data-tip="Spotted"
       >
         <span className="ico"><Icon name="sparkle" size={15} /></span>
         <span className="lbl">Spotted</span>
@@ -68,9 +86,9 @@ export default function Sidebar({ view, setView, collapsed, setCollapsed }) {
       <button
         className={`sb-item ${isActive({ type: 'decisions' }) ? 'active' : ''}`}
         onClick={() => setView({ type: 'decisions' })}
-        data-tip="Decisions · 8"
+        data-tip="Decisions"
       >
-        <span className="ico"><Icon name="log" size={15} /></span>
+        <span className="ico"><Icon name="settings" size={15} /></span>
         <span className="lbl">Decisions</span>
         <span className="num">8</span>
       </button>
